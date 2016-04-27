@@ -1,0 +1,48 @@
+{% extends 'pages/base.html' %}
+
+{% block content %}
+  <form method="post" action={{userId}}>{% csrf_token %}
+    <div id="sandbox-container">
+      <div class="input-daterange input-group" id="datepicker">
+        <input type="text" class="col-md-4 input-sm form-control" name="start" />
+        <span class="input-group-addon">to</span>
+        <input type="text" class="col-md-4 input-sm form-control" name="end" />
+      </div>
+      <button type="submit" class="col-md-4 save btn btn-default">Search</button>
+    </div>
+  </form>
+  <script type="text/javascript">
+    $('#sandbox-container .input-daterange').datepicker({
+      format: 'yyyy-mm-dd'
+    });
+  </script>
+
+  <table id="table_id" class = "display">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Time In</th>
+        <th>Time Out</th>
+        <th># of Hours</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% with index=0 %}
+      {% for employeeLog in employeeLogs %}
+        <tr>
+          <td>{{employeeLog.date}}</td>
+          <td>{{employeeLog.timeIn}}</td>
+          <td>{{employeeLog.timeOut}}</td>
+          <td>{{employeeLog.hours|floatformat:2}}</td>
+
+        </tr>
+      {% endfor %}
+      {% endwith %}
+    </tbody>
+  </table>
+  <script type="text/javascript">
+    $(function(){
+      $("#table_id").dataTable();
+    });
+  </script>
+{% endblock %}

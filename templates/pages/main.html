@@ -1,0 +1,66 @@
+{% extends 'pages/base.html' %}
+{% load staticfiles %}
+{% block content %}
+
+<div class="container">
+
+  <div class="clockContainer">
+    <div class="clock"></div>
+
+  </div>
+
+  <script type="text/javascript">
+    var clock = $('.clock').FlipClock({{timeLeft}}, {
+      countdown: true
+    });
+  </script>
+
+
+  <h1>Welcome {{user.firstName}}</h1>
+  <div class="row container">
+    <div class="col-lg-12 col-md-12" style="float:none;">
+
+    </div>
+  </div>
+
+  <div class="buttons" style="float:none;">
+      {% if checkInButtuonEnabled %}
+        <a href="{% url 'wattsmain.views.post_check_in'%}"><button type="button" class="btn btn-primary">Check In</button></a>
+      {% else %}
+        <a href="{% url 'wattsmain.views.post_check_in'%}"><button type="button" class="btn btn-primary" disabled>Check In</button></a>
+      {% endif %}
+
+      {% if checkOutButtoneEnabled %}
+        <a href="{% url 'wattsmain.views.post_check_out'%}"><button type="button" class="btn btn-danger">Check Out</button></a>
+      {% else %}
+        <a href="{% url 'wattsmain.views.post_check_out'%}"><button type="button" class="btn btn-danger" disabled>Check Out</button></a>
+      {% endif %}
+      {% if user.userType == "superadmin" %}
+        <a href="{% url 'wattsmain.views.post_edit_employee' userId=user.id%}"><button type="button" class="btn btn-default">Edit</button></a>
+      {% endif %}
+      <a href="{% url 'wattsmain.views.post_attendance_report' userId=user.id%}"><button type="button" class="btn btn-default">My Logs</button></a>
+      <a href="{% url 'django.contrib.auth.views.login'%}"><button type="button" class="btn btn-danger">Logout</button></a>
+  </div>
+
+    {% for employee in employees %}
+    <div class="row text-center">
+      <div class="center-block">
+        
+        <h2>
+          {% if employee.isOut %}
+            <img style="vertical-align:middle" src="{%static "img/offline.png" %}"/>
+          {% else %}
+            <img style="vertical-align:middle" src="{%static "img/online.png" %}"/>
+          {% endif %}
+          {{employee.firstName}} {{employee.lastName}}
+          {% if user.userType == "superadmin" %}
+              <a href="{% url 'wattsmain.views.post_attendance_report' userId=employee.id%}"><button type="button" class="btn btn-default">Logs</button></a>
+              <a href="{% url 'wattsmain.views.post_edit_employee' userId=employee.id%}"><button type="button" class="btn btn-default">Edit</button></a>
+          {% endif %}
+        </h2>
+
+      </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
